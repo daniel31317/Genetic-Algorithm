@@ -206,7 +206,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 145, y: 145, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -223,7 +223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 025528037b80348418766de57d32c303, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  initialPopulation: 100
+  initialPopulation: 10000
   individualPrefab: {fileID: 8938894074572241066, guid: 9e579d679392d41458312cfd84fe15ce, type: 3}
 --- !u!1 &1103097609
 GameObject:
@@ -286,7 +286,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 72.5
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

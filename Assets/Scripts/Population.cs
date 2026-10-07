@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Unity.VisualScripting.LudiqRootObjectEditor;
 
 public class Population : MonoBehaviour
 {
@@ -13,37 +14,63 @@ public class Population : MonoBehaviour
 
     private List<Individual> population = new List<Individual>();
 
+    private Vector2 populationStartingPos = new Vector2();
+    private float populationSpacing = 0f;
+
+    private float individualScale = 0f;
+
 
     private void Awake()
     {
-        for(int i = 0; i < initialPopulation; i++)
+        environmentSpriteRenderer = GetComponent<SpriteRenderer>();
+
+        SetEnvironment();
+
+        for (int i = 0; i < initialPopulation; i++)
         {
             GameObject individualObject = Instantiate(individualPrefab);
-            individualObject.GetComponent<Individual>().InitialiseIndividual();
-            population.Add(individualObject.GetComponent<Individual>());
+            Individual individual = individualObject.GetComponent<Individual>();
+            individual.InitialiseIndividual();
+            individual.SetScale(individualScale);
+            population.Add(individual);
         }
 
-        environmentSpriteRenderer = GetComponent<SpriteRenderer>();
+
 
         SetPopulationPositions();
 
         StartCoroutine(GeneticAlgorithm());
     }
 
+    private void SetEnvironment()
+    {
+        individualScale = Mathf.Sqrt(initialPopulation);
+
+        float scale = initialPopulation + (individualScale / 2f * (individualScale - 1f));
+
+        transform.localScale = new Vector3(scale, scale, 1f);
+
+        Camera.main.orthographicSize = scale / 2f;
+
+        populationStartingPos = new Vector2((-scale + individualScale) / 2f, (scale - individualScale) / 2f);
+
+        populationSpacing = individualScale + (individualScale / 2f);
+    }
+
 
     private void SetPopulationPositions()
     {
-        float xPos = -67.5f;
-        float yPos = 67.5f;
+        float xPos = populationStartingPos.x;
+        float yPos = populationStartingPos.y;
         
         for(int i = 0; i < population.Count; i++)
         {
             population[i].transform.position = new Vector3(xPos, yPos, 0);
-            xPos += 15f;
-            if(xPos > 67.5f)
+            xPos += populationSpacing;
+            if(xPos > -populationStartingPos.x)
             {
-                xPos = -67.5f;
-                yPos -= 15f;
+                xPos = populationStartingPos.x;
+                yPos -= populationSpacing;
             }
         }
     }
@@ -110,7 +137,12 @@ public class Population : MonoBehaviour
     private void KillUnfitPopulation()
     {
         int halfPopulation = population.Count / 2;
-        for(int i = halfPopulation; i < population.Count; i++)
+        if(halfPopulation % 2 != 0)
+        {
+            halfPopulation++;
+        }
+
+        for (int i = halfPopulation; i < population.Count; i++)
         {
             Destroy(population[i].gameObject);
         }
@@ -177,6 +209,9 @@ public class Population : MonoBehaviour
             //Mutate
             newIndividual1.SetColour(Mutate(newColour1));
             newIndividual2.SetColour(Mutate(newColour2));
+
+            newIndividual1.SetScale(individualScale);
+            newIndividual2.SetScale(individualScale);
 
             newPopulation.Add(newIndividual1);
             newPopulation.Add(newIndividual2);

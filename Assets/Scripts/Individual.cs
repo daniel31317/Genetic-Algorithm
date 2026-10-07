@@ -25,6 +25,12 @@ public class Individual : MonoBehaviour
         spriteRenderer.color = color;
     }
 
+
+    public void SetScale(float newScale)
+    {
+        transform.localScale = new Vector3(newScale, newScale, 1f);
+    }
+
     public Color GetColour()
     {
         return color;
