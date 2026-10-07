@@ -119,7 +119,7 @@ public class Population : MonoBehaviour
 
         float fitness = (targetVector - individualVector).magnitude;    
 
-        if(fitness < 0.0035f)
+        if(fitness < 0.005f)
         {
             correctPopulationCount++;
         }
@@ -155,7 +155,7 @@ public class Population : MonoBehaviour
     private void KillUnfitPopulation()
     {
         int halfPopulation = population.Count / 2;
-        if(halfPopulation % 2 != 0)
+        if(population.Count % 2 != 0)
         {
             halfPopulation++;
         }
@@ -164,7 +164,7 @@ public class Population : MonoBehaviour
         {
             Destroy(population[i].gameObject);
         }
-        population.RemoveRange(halfPopulation, halfPopulation);
+        population.RemoveRange(halfPopulation, population.Count - halfPopulation);
     }
 
 
