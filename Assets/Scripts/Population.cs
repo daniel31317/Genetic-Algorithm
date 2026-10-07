@@ -119,7 +119,7 @@ public class Population : MonoBehaviour
 
         float fitness = (targetVector - individualVector).magnitude;    
 
-        if(fitness < 0.005f)
+        if(fitness < 0.0045f)
         {
             correctPopulationCount++;
         }
