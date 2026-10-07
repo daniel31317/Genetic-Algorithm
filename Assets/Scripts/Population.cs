@@ -1,16 +1,28 @@
+using Mono.Cecil;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using static Unity.VisualScripting.LudiqRootObjectEditor;
 
 public class Population : MonoBehaviour
 {
+    [Header("Population Settings")]
     [SerializeField] private int initialPopulation = 100;
+    [SerializeField] private float mutationChance = 10;
+
+    [Header("Cosmetical Stuff")]
     [SerializeField] private GameObject individualPrefab;
+    [SerializeField] private TMP_Text generationText;
+    [SerializeField] private TMP_Text correctPopulationText;
 
     private SpriteRenderer environmentSpriteRenderer;
+
+
+    private int correctPopulationCount = 0;
+    private int generationCount = 1;
 
     private List<Individual> population = new List<Individual>();
 
@@ -89,6 +101,7 @@ public class Population : MonoBehaviour
 
     private void DetermineFitnessOfPopulation()
     {
+        correctPopulationCount = 0;
         for (int i = 0; i < population.Count; i++)
         {
             population[i].SetFitness(CalculateFitness(population[i]));
@@ -105,6 +118,11 @@ public class Population : MonoBehaviour
         Vector3 individualVector = new Vector3(individualColour.r, individualColour.g, individualColour.b); 
 
         float fitness = (targetVector - individualVector).magnitude;    
+
+        if(fitness < 0.0035f)
+        {
+            correctPopulationCount++;
+        }
 
         return fitness;
     }
@@ -227,7 +245,7 @@ public class Population : MonoBehaviour
 
     private Color Mutate(Color colour)
     {
-        float mutationRate = 0.1f;
+        float mutationRate = mutationChance / 100f;
 
         Vector3 mutatedColour = new Vector3(colour.r, colour.g, colour.b);
 
@@ -249,8 +267,11 @@ public class Population : MonoBehaviour
     {
         while(true)
         {
+            generationText.text = "Generation: " + generationCount;
+            correctPopulationText.text = "Correct Population: " + correctPopulationCount;
             yield return new WaitForSeconds(1f);
             GeneticAlgorithmLoop();
+            generationCount++;
         }
     }
 
